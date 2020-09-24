@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
   python: circleci/python@0.3.0
-  slack: circleci/slack@3.4.1
 
 executors:
   deploy-executor:
@@ -22,7 +21,7 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      - run: python deepnote/.deepnote/test.py
+      - run: python src/variable_explorer/test.py
 
 workflows:
   version: 2
