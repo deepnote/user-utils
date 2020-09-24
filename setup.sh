@@ -13,7 +13,11 @@ cp ./user-utils/src/df/test.py $HOME/.deepnote
 cp ./user-utils/src/variable_explorer/variable_explorer.py $HOME/.deepnote
 cp ./user-utils/src/variable_explorer/variable_explorer_helpers.py $HOME/.deepnote
 
+# Append to .bashrc
+echo 'cd ~/work \n \
+    source /opt/venv/bin/activate \n \
+    PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@deepnote\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] \$ "' >> $HOME/.bashrc
 
-
-
+# Get available kernels
+jupyter kernelspec list --json > $HOME/work/.deepnote/available-kernels.json
 
