@@ -1,32 +1,21 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@0.3.0
-  slack: circleci/slack@3.4.1
-
-executors:
-  deploy-executor:
-    docker:
-      - image: google/cloud-sdk
-    environment:
-      GOOGLE_PROJECT_ID: 'deepnote-200602'
-      GOOGLE_COMPUTE_ZONE: 'us-central1-b'
+  python: circleci/python@0.2.1
 
 jobs:
-  run-tests:
-    executor:
-      name: python/default
-      tag: '3.7.8'
+  build-and-test:
+    executor: python/default
     steps:
       - checkout
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      - run: python deepnote/.deepnote/test.py
+      - run:
+          command: ./manage.py test
+          name: Test
 
 workflows:
-  version: 2
-  test:
+  main:
     jobs:
-      - run-tests
- 
+      - build-and-test
