@@ -1,4 +1,7 @@
+#!/bin/bash
+set -euxo pipefail
 
+cd "$(dirname "$0")"
 # Configs
 cp ./user-utils/src/ipython/ipython_config.py $HOME/.ipython/profile_default/
 cp ./user-utils/src/jupyter/ipython_config.py $HOME/.jupyter/
