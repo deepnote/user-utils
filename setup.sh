@@ -10,7 +10,7 @@ cp ./src/jupyter/jupyter_notebook_config.py $HOME/.jupyter/
 
 # Code
 mkdir $HOME/.deepnote
-cp ./src/jupyter/set_notebook_path.py $HOME/.deepnote
+cp ./src/ipython/set_notebook_path.py $HOME/.deepnote
 cp ./src/variable_explorer/variable_explorer.py $HOME/.deepnote
 cp ./src/variable_explorer/variable_explorer_helpers.py $HOME/.deepnote
 
