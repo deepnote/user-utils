@@ -3,7 +3,6 @@ set -euxo pipefail
 
 cd "$(dirname "$0")"
 
-pwd
 # Configs
 cp ./src/ipython/ipython_config.py $HOME/.ipython/profile_default/
 cp ./src/jupyter/jupyter_notebook_config.py $HOME/.jupyter/
