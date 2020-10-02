@@ -6,12 +6,11 @@ cd "$(dirname "$0")"
 pwd
 # Configs
 cp ./src/ipython/ipython_config.py $HOME/.ipython/profile_default/
-cp ./src/jupyter/ipython_config.py $HOME/.jupyter/
+cp ./src/jupyter/jupyter_notebook_config.py $HOME/.jupyter/
 
 # Code
 mkdir $HOME/.deepnote
 cp ./src/jupyter/set_notebook_path.py $HOME/.deepnote
-cp ./src/df/test.py $HOME/.deepnote
 cp ./src/variable_explorer/variable_explorer.py $HOME/.deepnote
 cp ./src/variable_explorer/variable_explorer_helpers.py $HOME/.deepnote
 
