@@ -578,7 +578,7 @@ c.FileContentsManager.delete_to_trash = False
 ## A class for managing multiple kernels.
 
 ## The name of the default kernel to start
-#c.MultiKernelManager.default_kernel_name = 'python3'
+c.MultiKernelManager.default_kernel_name =  os.environ["DEFAULT_KERNEL_NAME"] if "DEFAULT_KERNEL_NAME" in os.environ else 'python3'
 
 ## The kernel manager class.  This is configurable to allow subclassing of the
 #  KernelManager for customized behavior.
