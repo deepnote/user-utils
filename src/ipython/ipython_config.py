@@ -25,7 +25,11 @@
 # c.InteractiveShellApp.extensions = ['autoreload']
 
 ## List of files to run at IPython startup.
-c.InteractiveShellApp.exec_files = ['/home/jovyan/.deepnote/variable_explorer.py', '/home/jovyan/.deepnote/set_notebook_path.py']
+c.InteractiveShellApp.exec_files = [
+    '/home/jovyan/.deepnote/variable_explorer.py',
+    '/home/jovyan/.deepnote/set_notebook_path.py',
+    '/home/jovyan/.deepnote/sql_utils.py'
+]
 
 ## Execute the given command string.
 #c.InteractiveShellApp.code_to_run = ''
