@@ -141,6 +141,8 @@ class TestVarDetails(unittest.TestCase):
     def test_get_var_details_json(self):
         import numpy as np
         import pandas as pd
+        import datetime
+        import pytz
 
         vars = {
             # Native
@@ -215,11 +217,13 @@ class TestVarDetails(unittest.TestCase):
             # TODO: I can't make this work
             # 'pd_series_date_range': pd.Series(range(3), pd.date_range('20130101', periods=3, tz='UTC')),
             'pd_df': pd.DataFrame(np.random.randn(2, 3), index=[1, 2], columns=['A', 'B', 'C']),
-            # TODO: I can't make this work
-            # 'pd_df_2': pd.DataFrame(np.random.randn(2, 3), index=pd.date_range('1/1/2000', periods=2), columns=['A', 'B', 'C']),
+            'pd_df_2': pd.DataFrame(np.random.randn(2, 3), index=pd.date_range('1/1/2000', periods=2), columns=['A', 'B', 'C']),
+            'pd_datetime_tz_df': pd.DataFrame([datetime.datetime.now().astimezone(pytz.timezone('UTC'))], columns=['datetime']),
+            'pd_datetime_no_tz_df': pd.DataFrame([datetime.datetime.now().astimezone(None)], columns=['datetime']),
+            # TODO: This works in variable explorer, but fails as a dataframe output due to IPython messaging bug
+            'pd_datetime_time_df': pd.DataFrame([datetime.time(10, 0)], columns=['datetime.time']),
             'pd_category': pd.Series(["a", "b", "c", "a"], dtype="category"),
-            # TODO: I can't make this work
-            # 'pd_category_df': pd.DataFrame({"A": ["a", "b", "c", "a"], "B": pd.Series(["a", "b", "c", "a"], dtype="category")}),
+            'pd_category_df': pd.DataFrame({"A": ["a", "b", "c", "a"], "B": pd.Series(["a", "b", "c", "a"], dtype="category")}),
             'pd_index': pd.Index([1, 2, 3]),
             'pd_index_2': pd.Index(list('abc')),
             'pd_date_range': pd.date_range('3/6/2012 00:00', periods=15, freq='D'),
@@ -235,15 +239,18 @@ class TestVarDetails(unittest.TestCase):
             'pd_interval': pd.Interval(1, 2),
             'pd_interval_2': pd.Interval(0.5, 1.5),
             'pd_interval_range': pd.interval_range(start=0, periods=5, freq=1.5),
-            # TODO: this throws an error, not sure why?
-            # 'pd_array_int64': pd.array([1, 2, np.nan], dtype="Int64"),
+            'pd_array_int64': pd.array([1, 2, np.nan], dtype="Int64"),
             # TODO: this throws an error, not sure why?
             # pd_array_boolean = pd.array([True, False, None], dtype="boolean"),
             # pd_array_boolean,
         }
 
         for key, value in vars.items():
-            _deepnote_get_var_details_json(value)
+            try:
+                _deepnote_get_var_details_json(value)
+            except:
+                self.fail(f"error for {key}")
+
 
 if __name__ == '__main__':
     unittest.main()
