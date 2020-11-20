@@ -1,6 +1,25 @@
-def get_histogram(np_array):
+def is_type_numeric(dtype):
+    import numpy as np
+    # datetime doesn't play nice with np.issubdtype, so we need to check explicitly
+    if str(dtype).startswith("datetime64"):
+        return True
+
+    # np.issubdtype crashes on categorical column dtype
+    if str(dtype) == "category":
+        return False
+
+    return np.issubdtype(dtype, np.number)
+
+def get_histogram(pd_series):
     import numpy as np
     import pandas as pd
+
+    if str(pd_series.dtype).startswith("datetime64"):
+        # convert to timestamp by casting to int64 and dividing by 10 ** 9, since output is in nanoseconds
+        np_array = np.array(pd_series.values.astype(np.int64) // 10 ** 9)
+    else:
+        np_array = np.array(pd_series)
+
     np_array_without_nulls = np_array[~pd.isnull(np_array)]
     y, bins = np.histogram(np_array_without_nulls, bins=10)
     return [{"bin_start": bins[i], "bin_end": bins[i + 1], "count": count} for i, count in enumerate(y)]
@@ -52,6 +71,13 @@ def describe_pd_dataframe(df):
     # Make sure the column names are unique since they don't have to be
     df_analyzed.columns = pd.io.parsers.ParserBase({'names': df_analyzed.columns})._maybe_dedup_names(df_analyzed.columns)
 
+    for i in range(len(df_analyzed.columns)):
+        column = df_analyzed.iloc[:,i] # We need to use iloc because it works if column names have duplicates
+
+        # If the column is categorical, we need to create a category for nan
+        if column.dtype.name == 'category':
+            df_analyzed.iloc[:,i] = column.cat.add_categories('nan')
+
     # Analyze only certain number of columns to keep things fast
     max_cells_to_analyze = 100000 # calculated so that the analysis takes no more than 100ms
     if (len(df_analyzed) == 0):
@@ -97,10 +123,10 @@ def describe_pd_dataframe(df):
             'unique_count': column.dropna().nunique(),
             'nan_count': column.isnull().sum(),
         }
-        if (np.issubdtype(column.dtype, np.number)):
+        if (is_type_numeric(column.dtype)):
             columns[i]['stats']['min'] = min(column.dropna()) if len(column.dropna()) > 0 else None
             columns[i]['stats']['max'] = max(column.dropna()) if len(column.dropna()) > 0 else None
-            columns[i]['stats']['histogram'] = get_histogram(np.array(column))
+            columns[i]['stats']['histogram'] = get_histogram(column)
         else:
             columns[i]['stats']['categories'] = get_categories(np.array(column))
 
@@ -151,10 +177,10 @@ def describe_pd_series(series):
     }
 
     # Add stats to columns, but only within computational limit
-    if (series_analyzed.dtype.name != 'category' and np.issubdtype(series_analyzed.dtype, np.number)):
+    if (series_analyzed.dtype.name != 'category' and is_type_numeric(series_analyzed.dtype)):
         column['stats']['min'] = min(series_analyzed.dropna()) if len(series_analyzed.dropna()) > 0 else None
         column['stats']['max'] = max(series_analyzed.dropna()) if len(series_analyzed.dropna()) > 0 else None
-        column['stats']['histogram'] = get_histogram(np.array(series_analyzed))
+        column['stats']['histogram'] = get_histogram(series_analyzed)
     else:
         column['stats']['categories'] = get_categories(np.array(series_analyzed))
 
