@@ -119,10 +119,7 @@ def _deepnote_add_formatters():
     def dataframe_formatter(df):
         # inspired by https://jupyter.readthedocs.io/en/latest/reference/mimetype.html
         MIME_TYPE = 'application/vnd.deepnote.dataframe.v2+json'
-        MAX_COLUMNS = 500
         try:
-            if (len(df.columns) > MAX_COLUMNS):
-                df.drop(df.columns[MAX_COLUMNS:], axis=1, inplace=True)
             return { MIME_TYPE: describe_pd_dataframe(df) }
         except:
             return { MIME_TYPE: { 'error': traceback.format_exc() } }

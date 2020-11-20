@@ -1,5 +1,6 @@
 import unittest
 import pandas as pd
+import datetime
 
 from variable_explorer_helpers import describe_pd_dataframe
 
@@ -49,7 +50,6 @@ class TestDataframeDescribe(unittest.TestCase):
                 ]
             },
         })
-        print(result['columns'][1]['stats']['categories'])
         self.assertEqual(result['columns'][1]['stats']['categories'], [
             {'name': 'a', 'count': 1},
             {'name': '2 others', 'count': 2},
@@ -136,6 +136,15 @@ class TestDataframeDescribe(unittest.TestCase):
             ]
         })
 
+    def test_datetime(self):
+        df = pd.DataFrame(data={
+            'col1': [1,2],
+            'col2': [datetime.date(2000,1,1), datetime.time(10,30)]
+        })
+        result = describe_pd_dataframe(df)
+        self.assertEqual(result['row_count'], 2)
+        self.assertEqual(result['column_count'], 2)
+
 # TODO: This is a semi-complete list of all the possible types that the user
 # might encounter. We want to make sure that all these types work (aka don't
 # throw any errors) and also to check whether they return a correct mimetype
@@ -216,7 +225,7 @@ class TestIPythonMimebundle(unittest.TestCase):
             # Pandas
             'pd_series': pd.Series(np.random.randn(5), index=['a', 'b', 'c', 'd', 'e']),
             # TODO: this throws an error, not sure why?
-            # pd_series_2: pd.Series(['a', 'b', 'c'], index=['a', 'b', 'c'], dtype="string"),
+            # 'pd_series_2': pd.Series(['a', 'b', 'c'], index=['a', 'b', 'c'], dtype="string"),
             # TODO: I can't make this work
             # 'pd_series_date_range': pd.Series(range(3), pd.date_range('20130101', periods=3, tz='UTC')),
             'pd_df': pd.DataFrame(np.random.randn(2, 3), index=[1, 2], columns=['A', 'B', 'C']),
@@ -232,6 +241,10 @@ class TestIPythonMimebundle(unittest.TestCase):
             'pd_date_range': pd.date_range('3/6/2012 00:00', periods=15, freq='D'),
             'pd_date_range_tz': pd.date_range('3/6/2012 00:00', periods=3, freq='D', tz='Europe/London'),
             'pd_timestamp': pd.Timestamp('2019-01-01', tz='US/Pacific'),
+            'pd_datetime': pd.DataFrame({
+                'col1': [1,2],
+                'col2': [datetime.date(2000,1,1), datetime.time(10,30)]
+            }),
             'pd_datetime_index': pd.DatetimeIndex(['11/06/2011 00:00', '11/06/2011 01:00', '11/06/2011 01:00', '11/06/2011 02:00']),
             'pd_period': pd.Period('2012', freq='A-DEC'),
             'pd_period_range': pd.period_range('1/1/2011', '1/1/2012', freq='M'),
