@@ -1,6 +1,8 @@
 import unittest
 import pandas as pd
+import numpy as np
 import datetime
+import pytz
 
 from variable_explorer_helpers import describe_pd_dataframe
 
@@ -137,13 +139,20 @@ class TestDataframeDescribe(unittest.TestCase):
         })
 
     def test_datetime(self):
-        df = pd.DataFrame(data={
+        df1 = pd.DataFrame(data={
             'col1': [1,2],
-            'col2': [datetime.date(2000,1,1), datetime.time(10,30)]
+            'col2': [datetime.date(2000,1,1), datetime.time(10,30)],
+            'col3': [datetime.datetime.now().astimezone(pytz.timezone('UTC')), datetime.datetime.now().astimezone(None)]
         })
-        result = describe_pd_dataframe(df)
-        self.assertEqual(result['row_count'], 2)
-        self.assertEqual(result['column_count'], 2)
+        result1 = describe_pd_dataframe(df1)
+        self.assertEqual(result1['row_count'], 2)
+        self.assertEqual(result1['column_count'], 3)
+
+        df2 = pd.DataFrame(np.random.randn(2, 3), index=pd.date_range('1/1/2000', periods=2), columns=['A', 'B', 'C'])
+        result2 = describe_pd_dataframe(df2)
+        self.assertEqual(result2['row_count'], 2)
+        self.assertEqual(result2['column_count'], 3)
+
 
 # # TODO: This is a semi-complete list of all the possible types that the user
 # # might encounter. We want to make sure that all these types work (aka don't
