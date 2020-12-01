@@ -1,4 +1,4 @@
-def execute_sql(query, postgres_connection_string_env_var):
+def _deepnote_execute_sql(query, postgres_connection_string_env_var):
   class ExecuteSqlError(Exception):
     pass
 
