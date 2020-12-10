@@ -153,6 +153,18 @@ class TestDataframeDescribe(unittest.TestCase):
         self.assertEqual(result2['row_count'], 2)
         self.assertEqual(result2['column_count'], 3)
 
+    def test_object_to_string_casting(self):
+        df1 = pd.DataFrame(data={
+            'col1': [1,2],
+            'col2': [datetime.date(2000,1,1), datetime.time(10,30)],
+            'col3': [datetime.datetime.now().astimezone(pytz.timezone('UTC')), datetime.datetime.now().astimezone(None)]
+        })
+        result1 = describe_pd_dataframe(df1)
+        self.assertTrue(type(result1['rows_top'][0]['col2']) is str)
+        self.assertTrue(type(result1['rows_top'][0]['col3']) is str)
+        self.assertTrue(type(result1['rows_top'][1]['col2']) is str)
+        self.assertTrue(type(result1['rows_top'][1]['col3']) is str)
+
 
 # # TODO: This is a semi-complete list of all the possible types that the user
 # # might encounter. We want to make sure that all these types work (aka don't

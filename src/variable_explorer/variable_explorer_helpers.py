@@ -56,6 +56,13 @@ def get_categories(np_array):
 
     return [{"name": name, "count": count} for name, count in categories]
 
+# Cast potentially non json-serializable objects to strings to avoid ValueErrors during iPython json serialization
+def cast_objects_to_string(df):
+    for column in df:
+        # List of types: object, int64, float64, bool, datetime64m timedelta[ns], category (https://pbpython.com/pandas_dtypes.html)
+        if df[column].dtype == 'object':
+            df[column] = df[column].apply(str)
+    return df
 
 # TODO: Get rid of the dependency on unique column names (will require a change in format and not to use .to_dict())
 # TODO: Then remove the df.copy() to save memory.
@@ -100,14 +107,14 @@ def describe_pd_dataframe(df):
     if (len(df_analyzed) == max_rows_to_display):
         skip_start = None
         skip_end = None
-        df_display_top = df_analyzed.fillna('nan').to_dict(orient='records')
+        df_display_top = cast_objects_to_string(df_analyzed.fillna('nan')).to_dict(orient='records')
         df_display_bottom = None
     else:
         skip_count = len(df_analyzed) - max_rows_to_display
         skip_start = math.floor((len(df_analyzed) - skip_count) / 2)
         skip_end = skip_start + skip_count
-        df_display_top = df_analyzed.iloc[:skip_start].fillna('nan').to_dict(orient='records')
-        df_display_bottom = df_analyzed.iloc[skip_end:].fillna('nan').to_dict(orient='records')
+        df_display_top = cast_objects_to_string(df_analyzed.iloc[:skip_start].fillna('nan')).to_dict(orient='records')
+        df_display_bottom = cast_objects_to_string(df_analyzed.iloc[skip_end:].fillna('nan')).to_dict(orient='records')
 
     # Analyze columns
     columns = [{ 'name': name } for name in df_analyzed.columns]
