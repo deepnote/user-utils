@@ -123,6 +123,7 @@ def _deepnote_add_formatters():
             return { MIME_TYPE: describe_pd_dataframe(df) }
         except:
             return { MIME_TYPE: { 'error': traceback.format_exc() } }
+
     get_ipython().display_formatter.mimebundle_formatter.for_type(pd.DataFrame, dataframe_formatter)
 
 if __name__ == '__main__':

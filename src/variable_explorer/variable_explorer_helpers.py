@@ -107,14 +107,14 @@ def describe_pd_dataframe(df):
     if (len(df_analyzed) == max_rows_to_display):
         skip_start = None
         skip_end = None
-        df_display_top = cast_objects_to_string(df_analyzed.fillna('nan')).to_dict(orient='records')
+        df_display_top = df_analyzed.fillna('nan')
         df_display_bottom = None
     else:
         skip_count = len(df_analyzed) - max_rows_to_display
         skip_start = math.floor((len(df_analyzed) - skip_count) / 2)
         skip_end = skip_start + skip_count
-        df_display_top = cast_objects_to_string(df_analyzed.iloc[:skip_start].fillna('nan')).to_dict(orient='records')
-        df_display_bottom = cast_objects_to_string(df_analyzed.iloc[skip_end:].fillna('nan')).to_dict(orient='records')
+        df_display_top = df_analyzed.iloc[:skip_start].fillna('nan')
+        df_display_bottom = df_analyzed.iloc[skip_end:].fillna('nan')
 
     # Analyze columns
     columns = [{ 'name': name } for name in df_analyzed.columns]
@@ -141,8 +141,8 @@ def describe_pd_dataframe(df):
         'row_count': len(df),
         'column_count': len(df.columns),
         'columns': columns,
-        'rows_top': df_display_top,
-        'rows_bottom': df_display_bottom,
+        'rows_top': cast_objects_to_string(df_display_top).to_dict(orient='records'),
+        'rows_bottom': None if df_display_bottom is None else cast_objects_to_string(df_display_bottom).to_dict(orient='records')
     }
 
 # TODO: Then remove the series.copy() to save memory.

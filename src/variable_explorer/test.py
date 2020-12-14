@@ -164,6 +164,9 @@ class TestDataframeDescribe(unittest.TestCase):
         self.assertTrue(type(result1['rows_top'][0]['col3']) is str)
         self.assertTrue(type(result1['rows_top'][1]['col2']) is str)
         self.assertTrue(type(result1['rows_top'][1]['col3']) is str)
+        self.assertEqual(result1['columns'][0]["dtype"], "int64")
+        self.assertEqual(result1['columns'][1]["dtype"], "object")
+        self.assertEqual(result1['columns'][1]["dtype"], "object")
 
 
 # # TODO: This is a semi-complete list of all the possible types that the user
